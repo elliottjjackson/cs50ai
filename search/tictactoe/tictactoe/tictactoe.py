@@ -163,10 +163,10 @@ def minimax(board):
 
     if player(board) == X:
         for action in action_list:
-            max_value(board, action)
+            max_value(board)
     elif player(board) == O:
         for action in action_list:
-            min_value(board, action)
+            min_value(board)
     else:
         return None
 
