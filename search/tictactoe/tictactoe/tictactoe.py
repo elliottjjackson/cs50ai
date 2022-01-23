@@ -7,6 +7,8 @@ from cmath import inf
 from copy import deepcopy
 import math
 
+from numpy import append
+
 X = "X"
 O = "O"
 EMPTY = None
@@ -134,7 +136,6 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    evaluation_dictionary = {}
 
     if terminal(board):
         return None
@@ -159,44 +160,36 @@ def minimax(board):
                 v = min(v, v_new)
             return v
 
-    action_list = list(actions(board))
-
-    if player(board) == X:
-        for action in action_list:
-            max_value(board)
-    elif player(board) == O:
-        for action in action_list:
-            min_value(board)
-    else:
+    def game_losing_action(board, action):
+        next_board = result(board, action)
+        next_action_list = actions(next_board)
+        for next_action in next_action_list:
+            opponent = player(next_board)
+            if winner(result(next_board, next_action)) == opponent:
+                return action
         return None
 
-    print(evaluation_dictionary)
+    action_list = list(actions(board))
+    for action in action_list:
+        if game_losing_action(board, action):
+            action_list.remove(action)
 
-    # if player(board) == X:
-    #     utility_list = [max_value(result(board, action)) for action in action_list]
-    #     for i, uti in enumerate(utility_list):
-    #         if uti == 1:
-    #             return action_list[i]
-    #     for i, uti in enumerate(utility_list):
-    #         if uti == 0:
-    #             return action_list[i]
-    #     return action_list[0]
+    if player(board) == X:
+        utility_list = [max_value(result(board, action)) for action in action_list]
+        for i, uti in enumerate(utility_list):
+            if uti == 1:
+                return action_list[i]
+        for i, uti in enumerate(utility_list):
+            if uti == 0:
+                return action_list[i]
+        return action_list[0]
 
-    # if player(board) == O:
-    #     utility_list = [min_value(result(board, action)) for action in action_list]
-    #     for i, uti in enumerate(utility_list):
-    #         if uti == -1:
-    #             return action_list[i]
-    #     for i, uti in enumerate(utility_list):
-    #         if uti == 0:
-    #             return action_list[i]
-    #     return action_list[0]
-
-
-board = [
-    [X, O, EMPTY],
-    [X, EMPTY, X],
-    [O, X, O],
-]
-
-minimax(board)
+    if player(board) == O:
+        utility_list = [min_value(result(board, action)) for action in action_list]
+        for i, uti in enumerate(utility_list):
+            if uti == -1:
+                return action_list[i]
+        for i, uti in enumerate(utility_list):
+            if uti == 0:
+                return action_list[i]
+        return action_list[0]
