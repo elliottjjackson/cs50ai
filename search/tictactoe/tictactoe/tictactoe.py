@@ -139,29 +139,23 @@ def minimax(board):
     if terminal(board):
         return None
 
-    def max_value(board, parent_action):
+    def max_value(board):
         v = -inf
         if terminal(board):
-            if parent_action not in evaluation_dictionary:
-                evaluation_dictionary[parent_action] = []
-                evaluation_dictionary[parent_action].append(utility(board))
             return utility(board)
         else:
             for action in actions(board):
-                v_new = min_value(result(board, action), parent_action)
+                v_new = min_value(result(board, action))
                 v = max(v, v_new)
             return v
 
-    def min_value(board, parent_action):
+    def min_value(board):
         v = inf
         if terminal(board):
-            if parent_action not in evaluation_dictionary:
-                evaluation_dictionary[parent_action] = []
-                evaluation_dictionary[parent_action].append(utility(board))
             return utility(board)
         else:
             for action in actions(board):
-                v_new = max_value(result(board, action), parent_action)
+                v_new = max_value(result(board, action))
                 v = min(v, v_new)
             return v
 
