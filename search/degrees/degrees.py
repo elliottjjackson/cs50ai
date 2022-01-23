@@ -29,7 +29,7 @@ def load_data(directory):
             people[row["id"]] = {
                 "name": row["name"],
                 "birth": row["birth"],
-                "movies": set()
+                "movies": set(),
             }
             if row["name"].lower() not in names:
                 names[row["name"].lower()] = {row["id"]}
@@ -43,7 +43,7 @@ def load_data(directory):
             movies[row["id"]] = {
                 "title": row["title"],
                 "year": row["year"],
-                "stars": set()
+                "stars": set(),
             }
 
     # Load stars
@@ -60,7 +60,7 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
 
     # Load data from files into memory
     print("Loading data...")
@@ -101,16 +101,17 @@ def shortest_path(source, target):
     # Initialise starting objects
     explored = []
     num_explored = 0
-    frontier = StackFrontier()
+    explored_set = set()
+    frontier = QueueFrontier()
     start = Node(state=source, parent=None, action=None)
     frontier.add(start)
-    
+
     while True:
-    # If frontier is empty
-    #   Stop. Return None to terminate main function
+        # If frontier is empty
+        #   Stop. Return None to terminate main function
         if frontier.empty():
             return None
-        
+
         # If the node contains the goal state,
         #   Return the (movie_id, person_id) pairs.
         if frontier.contains_state(target):
@@ -124,13 +125,28 @@ def shortest_path(source, target):
         # Else, remove a node from the frontier. This node is considered.
         node = frontier.remove()
 
-        # Else, add neighbors to frontier.    
+        # Else, add neighbors to frontier.
+        # TODO Add explored set to the neighbors assessment to avoid double ups
         neighbors = neighbors_for_person(node.state)
         for neighbor in neighbors:
-            if neighbor[1] != node.state:
-                neighbor_node = Node(state=neighbor[1], parent=node.state, action=neighbor[0])
+            if (
+                (neighbor[1] != node.state)
+                and (neighbor not in explored_set)
+                and (neighbor[0] != node.action)
+            ):
+                neighbor_node = Node(
+                    state=neighbor[1], parent=node.state, action=neighbor[0]
+                )
+                if (neighbor_node.state == target) and (node.action is not None):
+                    explored.append((node.action, node.state))
+                    explored.append((neighbor_node.action, neighbor_node.state))
+                    # Create list from 'explored' set
+                    # TODO return (pair list)
+                    return explored
                 frontier.add(neighbor_node)
-        if num_explored > 1:
+            else:
+                explored_set.add(neighbor)
+        if num_explored > 0:
             explored.append((node.action, node.state))
         num_explored += 1
 
@@ -176,4 +192,4 @@ def neighbors_for_person(person_id):
 
 if __name__ == "__main__":
     main()
-    print('done')
+    print("done")
