@@ -306,7 +306,7 @@ def test_minimax_takes_last_move():
         [O, X, X],
         [EMPTY, O, O],
     ]
-    assert minimax(board) == (3, 1)
+    assert minimax(board) == (2, 0)
 
 
 def test_minimax_suggests_O_blocks_X_diagonal_win():
@@ -315,7 +315,7 @@ def test_minimax_suggests_O_blocks_X_diagonal_win():
         [O, X, X],
         [EMPTY, O, EMPTY],
     ]
-    assert minimax(board) == (3, 3)
+    assert minimax(board) == (2, 2)
 
 
 def test_minimax_suggests_O_blocks_X_horizontal_win():
@@ -324,7 +324,7 @@ def test_minimax_suggests_O_blocks_X_horizontal_win():
         [EMPTY, X, X],
         [EMPTY, O, EMPTY],
     ]
-    assert minimax(board) == (2, 1)
+    assert minimax(board) == (1, 0)
 
 
 def test_minimax_suggests_O_blocks_X_vertical_win():
@@ -333,7 +333,7 @@ def test_minimax_suggests_O_blocks_X_vertical_win():
         [EMPTY, X, EMPTY],
         [EMPTY, EMPTY, EMPTY],
     ]
-    assert minimax(board) == (3, 2)
+    assert minimax(board) == (2, 1)
 
 
 def test_minimax_suggests_X_blocks_O_diagonal_win():
@@ -342,7 +342,7 @@ def test_minimax_suggests_X_blocks_O_diagonal_win():
         [EMPTY, O, X],
         [EMPTY, O, EMPTY],
     ]
-    assert minimax(board) == (3, 3)
+    assert minimax(board) == (2, 0)
 
 
 def test_minimax_suggests_X_blocks_O_horizontal_win():
@@ -351,16 +351,16 @@ def test_minimax_suggests_X_blocks_O_horizontal_win():
         [O, O, EMPTY],
         [X, EMPTY, EMPTY],
     ]
-    assert minimax(board) == (2, 3)
+    assert minimax(board) == (1, 2)
 
 
 def test_minimax_suggests_X_blocks_O_vertical_win():
     board = [
         [X, O, X],
-        [X, O, EMPTY],
+        [O, O, X],
         [EMPTY, EMPTY, O],
     ]
-    assert minimax(board) == (2, 3)
+    assert minimax(board) == (2, 1)
 
 
 def test_minimax_preferences_X_win_over_O_block():
@@ -369,7 +369,7 @@ def test_minimax_preferences_X_win_over_O_block():
         [O, O, EMPTY],
         [EMPTY, EMPTY, EMPTY],
     ]
-    assert minimax(board) == (1, 3)
+    assert minimax(board) == (0, 2)
 
 
 def test_minimax_preferences_O_win_over_X_block():
@@ -378,4 +378,4 @@ def test_minimax_preferences_O_win_over_X_block():
         [EMPTY, O, X],
         [EMPTY, EMPTY, EMPTY],
     ]
-    assert minimax(board) == (3, 2)
+    assert minimax(board) == (2, 1)
