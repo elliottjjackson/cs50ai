@@ -1,3 +1,8 @@
-lister = set([1, 2, 4, 3, 2, 1])
-setter = set(lister)
-print(setter)
+list = {(0, 0), (1, 1), (2, 2), (3, 3)}
+
+i, j = (0, 0)
+while (i, j) in list:
+    i += 1
+    j += 1
+    print(i, j)
+print(i, j)

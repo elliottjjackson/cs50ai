@@ -1,5 +1,7 @@
 import itertools
+from mimetypes import knownfiles
 import random
+from copy import deepcopy
 
 
 class Minesweeper:
@@ -172,6 +174,26 @@ class MinesweeperAI:
         for sentence in self.knowledge:
             sentence.mark_safe(cell)
 
+    def nearby_cells(self, cell):
+        """Returns a set of cells that are
+        within one row and column of a given cell,
+        not including the cell itself."""
+
+        nearby_cell_set = set()
+
+        # Loop over all cells within one row and column
+        for i in range(cell[0] - 1, cell[0] + 2):
+            for j in range(cell[1] - 1, cell[1] + 2):
+
+                # Ignore the cell itself
+                if (i, j) == cell:
+                    continue
+
+                if 0 <= i < self.height and 0 <= j < self.width:
+                    nearby_cell_set.add((i, j))
+
+        return nearby_cell_set
+
     def add_knowledge(self, cell, count):
         """
         Called when the Minesweeper board tells us, for a given
@@ -187,7 +209,22 @@ class MinesweeperAI:
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
-        raise NotImplementedError
+        self.moves_made.add(cell)
+        self.safes.add(cell)
+        cells = self.nearby_cells(cell)
+        self.knowledge.append(Sentence(cells, count))
+        print(cells)
+        for sentence in self.knowledge:
+            safes_list = deepcopy(sentence.known_safes())
+            if safes_list:
+                for safe_cell in safes_list:
+                    self.mark_safe(safe_cell)
+            mines_list = deepcopy(sentence.known_mines())
+            if mines_list:
+                for mine_cell in mines_list:
+                    self.mark_mine(mine_cell)
+        print(self.mines)
+        print(self.safes)
 
     def make_safe_move(self):
         """
@@ -198,7 +235,10 @@ class MinesweeperAI:
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        raise NotImplementedError
+        if not self.safes:
+            return None
+        else:
+            return None
 
     def make_random_move(self):
         """
@@ -207,4 +247,11 @@ class MinesweeperAI:
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        raise NotImplementedError
+        if len(self.moves_made) == self.height * self.width:
+            return None
+        i = random.randrange(self.height)
+        j = random.randrange(self.width)
+        while (i, j) in self.moves_made:
+            i = random.randrange(self.height)
+            j = random.randrange(self.width)
+        return (i, j)

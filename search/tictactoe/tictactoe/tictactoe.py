@@ -144,21 +144,19 @@ def minimax(board):
         v = -inf
         if terminal(board):
             return utility(board)
-        else:
-            for action in actions(board):
-                v_new = min_value(result(board, action))
-                v = max(v, v_new)
-            return v
+        for action in actions(board):
+            v_new = min_value(result(board, action))
+            v = max(v, v_new)
+        return v
 
     def min_value(board):
         v = inf
         if terminal(board):
             return utility(board)
-        else:
-            for action in actions(board):
-                v_new = max_value(result(board, action))
-                v = min(v, v_new)
-            return v
+        for action in actions(board):
+            v_new = max_value(result(board, action))
+            v = min(v, v_new)
+        return v
 
     def game_losing_action(board, action):
         next_board = result(board, action)
